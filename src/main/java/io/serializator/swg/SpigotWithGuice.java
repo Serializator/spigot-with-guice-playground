@@ -1,19 +1,25 @@
 package io.serializator.swg;
 
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
+import io.serializator.swg.state.FictiveStateManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class SpigotWithGuice extends JavaPlugin {
-    private Injector injector;
+
+    @Inject
+    private FictiveStateManager stateManager;
 
     @Override
     public void onEnable() {
-        injector = Guice.createInjector(new OurDiModule(this));
-        injector.injectMembers(this);
+        createInjector();
+
+        stateManager.registerListeners();
     }
 
-    public Injector getInjector() {
-        return injector;
+    private void createInjector() {
+        Injector injector = Guice.createInjector(new OurDiModule(this));
+        injector.injectMembers(this);
     }
 }
